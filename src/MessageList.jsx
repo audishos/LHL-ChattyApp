@@ -10,9 +10,11 @@ class MessageList extends Component {
         switch(message.type) {
           case "incomingMessage":
             return <Message key={index} username={message.username} content={message.content} colour={message.colour} />
+            break;
 
           case "incomingNotification":
             return <Notification key={index} username={message.username} content={message.content} />
+            break;
 
           default:
             throw new Error("Unknown event type:", event.data.type);
