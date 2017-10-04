@@ -1,65 +1,93 @@
 import React, {Component} from 'react';
+// import dotenv from 'dotenv';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
+import NavBar from './NavBar.jsx';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { currentUser: { name: "Anonymous" },
-                   messages: [
-                     { username: "Bob", content: "Hey there!" },
-                     { username: "Jason", content: "Hello!" }
-                   ]
-                 };
+    this.state = {
+      currentUser: { name: "Anonymous" },
+      messages: [],
+      connectedUserCount: 1
+    };
   }
 
-  // componentDidMount() {
-  //   console.log("componentDidMount <App />");
-  //   setTimeout(() => {
-  //     console.log("Simulating incoming message");
-  //     // Add a new message to the list of messages in the data store
-  //     const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-  //     const messages = this.state.messages.concat(newMessage)
-  //     // Update the state of the app component.
-  //     // Calling setState will trigger a call to render() in App and all child components.
-  //     this.setState({messages: messages})
-  //   }, 3000);
-  // }
+  componentWillMount() {
+    this.webSocket = new WebSocket("ws://localhost:3001");
+    this.webSocket.onopen = () => {
+      console.log("Connected to server")
+    }
+  }
 
-  render() {
-    // more code here..
+  componentDidMount() {
+    this.webSocket.onmessage = this.handleNewMessageFromServer;
   }
 
   render() {
     return (
       <div>
-        <MessageList messages={this.state.messages} />
+        <NavBar
+          connectedUserCount={this.state.connectedUserCount}
+        />
+        <MessageList
+          messages={this.state.messages}
+        />
         <ChatBar
           currentUser={this.state.currentUser}
           onSubmitMessage={this.handleNewMessage}
+          onChangeUser={this.handleChangeUser}
         />
       </div>
     );
   }
 
   handleNewMessage = (message) => {
-    this.setState({
-      currentUser: { name: message.username },
-      messages: [...this.state.messages, message]
-    });
+    this.webSocket.send(JSON.stringify({
+      type: "postMessage",
+      username: this.state.currentUser.name,
+      content: message
+    }));
   }
 
-  // handleChangeUser = (username) => {
-  //   const message = {
-  //     username: username,
-  //     content: `${this.state.currentUser.name} changed their name to ${username}`
-  //   };
+  handleNewMessageFromServer = (event) => {
+    const message = JSON.parse(event.data);
 
-  //   this.setState({
-  //     currentUser: {name: username},
-  //     messages: [...this.state.messages, message]
-  //   });
-  // }
+    switch(message.type) {
+      case "incomingMessage":
+        this.setState({
+          messages: [...this.state.messages, message]
+        });
+        break;
+
+      case "incomingNotification":
+      this.setState({
+          messages: [...this.state.messages, message]
+        });
+        break;
+
+      case "incomingUserConnectionCount":
+        this.setState({ connectedUserCount: message.content});
+        break;
+
+      default:
+        throw new Error("Unknown event type", newMessage.type);
+    }
+
+  }
+
+  handleChangeUser = (username) => {
+    const message = `${this.state.currentUser.name} changed their name to ${username}`;
+    this.webSocket.send(JSON.stringify({
+      type: "postNotification",
+      username: this.state.currentUser.name,
+      content: message
+    }));
+    this.setState({
+      currentUser: {name: username}
+    });
+  }
 }
 
 export default App;
