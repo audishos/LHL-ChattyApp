@@ -93,6 +93,7 @@ class App extends Component {
   }
 
   handleChangeUser = (username) => {
+    // still need to update server with new username!!!
     let newUser = this.state
     const message = `${this.state.currentUser.name} changed their name to ${username}`;
     this.webSocket.send(JSON.stringify({
