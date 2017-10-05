@@ -1,10 +1,17 @@
 // server.js
 
-const express = require('express');
-const WebSocket = require('ws');
+const express      = require('express');
+const WebSocket    = require('ws');
 const SocketServer = require('ws').Server;
-const uuid = require('uuid/v4');
-const randomColor = require('randomcolor');
+const uuid         = require('uuid/v4');
+const randomColor  = require('randomcolor');
+const fetch        = require('node-fetch');
+const querystring  = require('querystring');
+const dotenv       = require('dotenv').config();
+
+const GIPHYURL = "https://api.giphy.com/v1/gifs/random?";
+const GIPHYAPIKEY = process.env.APIKEY_GIPHY;
+const GIPHYREGEX = /^\/giphy\W+(\w.*)$/i;
 
 // Set the port to 3001
 const PORT = 3001;
@@ -43,7 +50,7 @@ wss.on('connection', (ws) => {
   const initUser = (userMessage) => {
     let newUserMessage = userMessage;
     newUserMessage.content.id = newUserMessage.id;
-    newUserMessage.content.colour = randomColor();
+    newUserMessage.content.colour = randomColor({ luminosity: "bright" });
     return newUserMessage;
   }
 
@@ -56,7 +63,29 @@ wss.on('connection', (ws) => {
 
       case "postMessage":
         incomingMessage.type = "incomingMessage";
-        wss.broadcast(JSON.stringify(incomingMessage));
+        let command = incomingMessage.content.match(GIPHYREGEX);
+        if (command) {
+          let queryString = querystring.stringify({
+            api_key: GIPHYAPIKEY,
+            tag: command[1]
+          });
+          let url = GIPHYURL + queryString;
+          fetch(url)
+          .then( (response) => {
+            return response.json();
+          })
+          .then( (json => {
+            incomingMessage.content = json.data.image_url;
+            wss.broadcast(JSON.stringify(incomingMessage));
+          }))
+          .catch( (error) => {
+            console.error("A giphy API error occurred:", error);
+            incomingMessage.content = "Failed to load giphy.";
+            ws.send(JSON.stringify(incomingMessage));
+          });
+        } else {
+          wss.broadcast(JSON.stringify(incomingMessage));
+        }
         break;
 
       case "postNotification":
