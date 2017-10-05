@@ -47,6 +47,8 @@ $ npm start
 
   ![slash giphy tacos](https://media3.giphy.com/media/l3vQYwp6SXnoh4S40/giphy.gif "slash giphy tacos")
 
+  For this feature to work, you must have or create a giphy API key. Then create a .env file in your chatty-server directory and assign `APIKEY_GIPHY=YourApiKeyHere`
+
 - Paste image URLs to share images directly (.gif, .jpg, .png)
 
 ## Screenshots
