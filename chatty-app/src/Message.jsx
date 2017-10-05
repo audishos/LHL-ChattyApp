@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const imageRegex = /\b(https?:\/\/)\S+\.(\S+)\/(\S+)\.(jpg|png|gif)\b/;
+const imageRegex = /\bhttps?:\/\/\S+\.\S+\/\S+\.(jpg|png|gif)\b/i;
 
 class Message extends Component {
   render() {

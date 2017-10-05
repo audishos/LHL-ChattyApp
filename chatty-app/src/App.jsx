@@ -58,6 +58,7 @@ class App extends Component {
       type: "postMessage",
       userId: this.state.currentUser.id,
       username: this.state.currentUser.name,
+      colour: this.state.currentUser.colour,
       content: message
     }));
   }
