@@ -46,8 +46,10 @@ class App extends Component {
         />
         <ChatBar
           currentUser={this.state.currentUser}
+          userColour={this.state.currentUser.colour}
           onSubmitMessage={this.handleNewMessage}
           onChangeUser={this.handleChangeUser}
+          handleChangeColour={this.handleChangeColour}
         />
       </div>
     );
@@ -107,6 +109,16 @@ class App extends Component {
         id: this.state.currentUser.id,
         name: username,
         colour: this.state.currentUser.colour
+      }
+    });
+  }
+
+  handleChangeColour = (colour, event) => {
+    this.setState({
+      currentUser: {
+        id: this.state.currentUser.id,
+        name: this.state.currentUser.name,
+        colour: colour.hex
       }
     });
   }

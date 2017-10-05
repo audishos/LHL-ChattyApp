@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { HuePicker } from 'react-color';
 
 class ChatBar extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class ChatBar extends Component {
           className="chatbar-username"
           placeholder="Your Name (Optional)"
           value={this.state.username}
+          style={{color: this.props.userColour}}
           onChange={this.handleUsernameChange}
           onKeyPressCapture={this.handleSubmitUserName}
         />
@@ -25,6 +27,11 @@ class ChatBar extends Component {
           value={this.state.content}
           onChange={this.handleMessageChange}
           onKeyPressCapture={this.handleSubmitMessage}
+        />
+        <HuePicker
+          id='colour-picker'
+          color={this.props.userColour}
+          onChangeComplete={this.props.handleChangeColour}
         />
       </footer>
     );
