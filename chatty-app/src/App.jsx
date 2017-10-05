@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-// import dotenv from 'dotenv';
+// import dotenv from 'dotenv.config()';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 import NavBar from './NavBar.jsx';
@@ -109,6 +109,11 @@ class App extends Component {
         colour: this.state.currentUser.colour
       }
     });
+  }
+
+  scrollToBottom = () => {
+    const node = ReactDOM.findDOMNode(this.messagesEnd);
+    node.scrollIntoView({ behavior: "smooth" });
   }
 }
 

@@ -9,7 +9,7 @@ const fetch        = require('node-fetch');
 const querystring  = require('querystring');
 const dotenv       = require('dotenv').config();
 
-const GIPHYURL = "https://api.giphy.com/v1/gifs/random?";
+const GIPHYURL = 'https://api.giphy.com/v1/gifs/random?';
 const GIPHYAPIKEY = process.env.APIKEY_GIPHY;
 const GIPHYREGEX = /^\/giphy\W+(\w.*)$/i;
 
@@ -42,7 +42,7 @@ wss.on('connection', (ws) => {
   const userCountMessage = () => {
     return (JSON.stringify({
       id: uuid(),
-      type: "incomingUserConnectionCount",
+      type: 'incomingUserConnectionCount',
       content: wss.clients.size
     }));
   }
@@ -50,7 +50,7 @@ wss.on('connection', (ws) => {
   const initUser = (userMessage) => {
     let newUserMessage = userMessage;
     newUserMessage.content.id = newUserMessage.id;
-    newUserMessage.content.colour = randomColor({ luminosity: "bright" });
+    newUserMessage.content.colour = randomColor({ luminosity: 'bright' });
     return newUserMessage;
   }
 
@@ -61,8 +61,8 @@ wss.on('connection', (ws) => {
 
     switch(incomingMessage.type) {
 
-      case "postMessage":
-        incomingMessage.type = "incomingMessage";
+      case 'postMessage':
+        incomingMessage.type = 'incomingMessage';
         let command = incomingMessage.content.match(GIPHYREGEX);
         if (command) {
           let queryString = querystring.stringify({
@@ -79,8 +79,8 @@ wss.on('connection', (ws) => {
             wss.broadcast(JSON.stringify(incomingMessage));
           }))
           .catch( (error) => {
-            console.error("A giphy API error occurred:", error);
-            incomingMessage.content = "Failed to load giphy.";
+            console.error('A giphy API error occurred:', error);
+            incomingMessage.content = 'Failed to load giphy.';
             ws.send(JSON.stringify(incomingMessage));
           });
         } else {
@@ -88,19 +88,19 @@ wss.on('connection', (ws) => {
         }
         break;
 
-      case "postNotification":
-        incomingMessage.type = "incomingNotification";
+      case 'postNotification':
+        incomingMessage.type = 'incomingNotification';
         wss.broadcast(JSON.stringify(incomingMessage));
         break;
 
-      case "postNewUser":
-        incomingMessage.type = "incomingNewUser";
+      case 'postNewUser':
+        incomingMessage.type = 'incomingNewUser';
         incomingMessage = initUser(incomingMessage);
         ws.send(JSON.stringify(incomingMessage));
         break;
 
       default:
-        throw new Error("Unknown event type", incomingMessage.type);
+        throw new Error('Unknown event type', incomingMessage.type);
     }
 
   })

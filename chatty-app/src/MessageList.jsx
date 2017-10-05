@@ -5,19 +5,17 @@ import Notification from './Notification.jsx';
 class MessageList extends Component {
   render() {
     return (
-      <main className="messages">
+      <main className='messages'>
       {this.props.messages.map( (message, index) => {
         switch(message.type) {
-          case "incomingMessage":
+          case 'incomingMessage':
             return <Message key={index} username={message.username} content={message.content} colour={message.colour} />
-            break;
 
-          case "incomingNotification":
+          case 'incomingNotification':
             return <Notification key={index} username={message.username} content={message.content} />
-            break;
 
           default:
-            throw new Error("Unknown event type:", event.data.type);
+            throw new Error('Unknown event type:', event.data.type);
         }
       })}
       </main>
