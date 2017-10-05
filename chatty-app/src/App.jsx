@@ -33,6 +33,11 @@ class App extends Component {
 
   componentDidMount() {
     this.webSocket.onmessage = this.handleNewMessageFromServer;
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   render() {
@@ -42,8 +47,10 @@ class App extends Component {
           connectedUserCount={this.state.connectedUserCount}
         />
         <MessageList
+          ref={(el) => this.messagesContainer = el}
           messages={this.state.messages}
         />
+        <div ref={(el) => this.messagesEnd = el}></div>
         <ChatBar
           currentUser={this.state.currentUser}
           userColour={this.state.currentUser.colour}
@@ -124,9 +131,8 @@ class App extends Component {
   }
 
   scrollToBottom = () => {
-    const node = ReactDOM.findDOMNode(this.messagesEnd);
-    node.scrollIntoView({ behavior: "smooth" });
-  }
+    this.messagesEnd.scrollIntoView({block: 'start', behavior: 'smooth', inline: 'end'});
+  };
 }
 
 export default App;
