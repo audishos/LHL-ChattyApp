@@ -4,8 +4,12 @@ class NavBar extends Component {
   render() {
     return (
       <nav className="navbar">
-        <a href="/" className="navbar-brand">Chatty</a>
-        <span className="navbar-user-count">{this.props.connectedUserCount} users online</span>
+        <a href="/" className="navbar-brand">
+          <i className="fa fa-comments-o" aria-hidden="true"></i>
+          Chatty
+        </a>
+        <span className="navbar-user-count">{this.props.connectedUserCount} user(s) online <i className="fa fa-users" aria-hidden="true"></i>
+        </span>
       </nav>
     );
   }
