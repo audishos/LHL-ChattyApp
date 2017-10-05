@@ -6,13 +6,13 @@ class MessageList extends Component {
   render() {
     return (
       <main className='messages'>
-      {this.props.messages.map( (message, index) => {
+      {this.props.messages.map( (message) => {
         switch(message.type) {
           case 'incomingMessage':
-            return <Message key={index} username={message.username} content={message.content} colour={message.colour} />
+            return <Message key={message.id} username={message.username} content={message.content} colour={message.colour} />
 
           case 'incomingNotification':
-            return <Notification key={index} username={message.username} content={message.content} />
+            return <Notification key={message.id} username={message.username} content={message.content} />
 
           default:
             throw new Error('Unknown event type:', event.data.type);

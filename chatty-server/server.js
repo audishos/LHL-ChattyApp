@@ -58,6 +58,7 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (postMessage) => {
     let incomingMessage = { id: uuid(), ...JSON.parse(postMessage) };
+    incomingMessage.content.id = incomingMessage.id;
 
     switch(incomingMessage.type) {
 
