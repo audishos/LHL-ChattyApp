@@ -3,6 +3,11 @@ Chatty
 
 A simple, single chat room app built using Webpack, ReactJS, WebSockets and Express.
 
+## Requirements
+
+- Node JS V8 or above
+- Tested and works best in Google Chrome
+
 ## Usage
 
 1. Clone the repo
